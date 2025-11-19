@@ -11,10 +11,14 @@ connectDB();
 
 const app = express();
 
-// Middleware - Configure CORS to accept both ports
+// Middleware - Configure CORS from environment variable
+const corsOrigins = process.env.CORS_ORIGIN
+  ? process.env.CORS_ORIGIN.split(",")
+  : ["http://localhost:3000", "http://localhost:3001"];
+
 app.use(
   cors({
-    origin: ["http://localhost:3000", "http://localhost:3001"],
+    origin: corsOrigins,
     credentials: true,
   })
 );
