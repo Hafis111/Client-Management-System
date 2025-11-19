@@ -1,13 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, Select, message, Popconfirm, Space, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  message,
+  Popconfirm,
+  Space,
+  Tag,
+} from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchComments,
   createComment,
   updateComment,
   deleteComment,
-} from '../store/slices/commentSlice';
+} from "../store/slices/commentSlice";
 
 const { Option } = Select;
 
@@ -19,9 +30,12 @@ const Comments = () => {
   const [editingComment, setEditingComment] = useState(null);
   const [form] = Form.useForm();
 
-  const canCreate = user?.role === 'admin' || user?.permissions?.comments?.create;
-  const canUpdate = user?.role === 'admin' || user?.permissions?.comments?.update;
-  const canDelete = user?.role === 'admin' || user?.permissions?.comments?.delete;
+  const canCreate =
+    user?.role === "admin" || user?.permissions?.comments?.create;
+  const canUpdate =
+    user?.role === "admin" || user?.permissions?.comments?.update;
+  const canDelete =
+    user?.role === "admin" || user?.permissions?.comments?.delete;
 
   useEffect(() => {
     dispatch(fetchComments());
@@ -42,67 +56,69 @@ const Comments = () => {
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteComment(id)).unwrap();
-      message.success('Comment deleted successfully');
+      message.success("Comment deleted successfully");
     } catch (error) {
-      message.error(error || 'Failed to delete comment');
+      message.error(error || "Failed to delete comment");
     }
   };
 
   const handleSubmit = async (values) => {
     try {
       if (editingComment) {
-        await dispatch(updateComment({ id: editingComment._id, commentData: values })).unwrap();
-        message.success('Comment updated successfully');
+        await dispatch(
+          updateComment({ id: editingComment.id, commentData: values })
+        ).unwrap();
+        message.success("Comment updated successfully");
       } else {
         await dispatch(createComment(values)).unwrap();
-        message.success('Comment created successfully');
+        message.success("Comment created successfully");
       }
       setIsModalOpen(false);
       form.resetFields();
     } catch (error) {
-      message.error(error || 'Operation failed');
+      message.error(error || "Operation failed");
     }
   };
 
   const columns = [
     {
-      title: 'Content',
-      dataIndex: 'content',
-      key: 'content',
+      title: "Content",
+      dataIndex: "content",
+      key: "content",
       ellipsis: true,
     },
     {
-      title: 'Related To',
-      dataIndex: 'relatedTo',
-      key: 'relatedTo',
+      title: "Related To",
+      dataIndex: "relatedTo",
+      key: "relatedTo",
       render: (relatedTo) => (
         <Tag color="blue" className="capitalize">
           {relatedTo}
         </Tag>
       ),
       filters: [
-        { text: 'Client', value: 'client' },
-        { text: 'Order', value: 'order' },
-        { text: 'Product', value: 'product' },
-        { text: 'General', value: 'general' },
+        { text: "Client", value: "client" },
+        { text: "Order", value: "order" },
+        { text: "Product", value: "product" },
+        { text: "General", value: "general" },
       ],
       onFilter: (value, record) => record.relatedTo === value,
     },
     {
-      title: 'Created By',
-      dataIndex: ['createdBy', 'name'],
-      key: 'createdBy',
+      title: "Created By",
+      dataIndex: ["createdBy", "name"],
+      key: "createdBy",
     },
     {
-      title: 'Created',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: "Created",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (date) => new Date(date).toLocaleString(),
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space>
           {canUpdate && (
@@ -118,11 +134,16 @@ const Comments = () => {
           {canDelete && (
             <Popconfirm
               title="Are you sure you want to delete this comment?"
-              onConfirm={() => handleDelete(record._id)}
+              onConfirm={() => handleDelete(record.id)}
               okText="Yes"
               cancelText="No"
             >
-              <Button type="primary" danger icon={<DeleteOutlined />} size="small">
+              <Button
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+              >
                 Delete
               </Button>
             </Popconfirm>
@@ -149,11 +170,11 @@ const Comments = () => {
         rowKey="_id"
         loading={loading}
         pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: "max-content" }}
       />
 
       <Modal
-        title={editingComment ? 'Edit Comment' : 'Add Comment'}
+        title={editingComment ? "Edit Comment" : "Add Comment"}
         open={isModalOpen}
         onCancel={() => {
           setIsModalOpen(false);
@@ -165,7 +186,7 @@ const Comments = () => {
           <Form.Item
             name="content"
             label="Comment"
-            rules={[{ required: true, message: 'Please enter comment' }]}
+            rules={[{ required: true, message: "Please enter comment" }]}
           >
             <Input.TextArea rows={4} />
           </Form.Item>
@@ -174,7 +195,9 @@ const Comments = () => {
             <Form.Item
               name="relatedTo"
               label="Related To"
-              rules={[{ required: true, message: 'Please select related type' }]}
+              rules={[
+                { required: true, message: "Please select related type" },
+              ]}
             >
               <Select placeholder="Select type">
                 <Option value="general">General</Option>
@@ -190,7 +213,7 @@ const Comments = () => {
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              {editingComment ? 'Update' : 'Create'}
+              {editingComment ? "Update" : "Create"}
             </Button>
           </Form.Item>
         </Form>

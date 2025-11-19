@@ -5,6 +5,7 @@ A comprehensive full-stack client management system with advanced role-based acc
 ## 🚀 Features
 
 ### Core Functionality
+
 - **Products Management**: Full CRUD operations for managing products with stock tracking
 - **Orders Management**: Create orders for clients with dual payment method support (Cash & Card)
 - **Clients Management**: Complete client information management system
@@ -12,6 +13,7 @@ A comprehensive full-stack client management system with advanced role-based acc
 - **User Management**: Create and manage users with granular permissions
 
 ### Advanced Authorization System
+
 - **Role-Based Access**: Admin and User roles
 - **Granular Permissions**: Each user can have different permissions per resource:
   - View, Create, Update, Delete permissions for each feature
@@ -19,6 +21,7 @@ A comprehensive full-stack client management system with advanced role-based acc
   - Users have customizable permission sets
 
 ### Technical Features
+
 - JWT-based authentication
 - RESTful API architecture
 - Redux state management
@@ -40,18 +43,21 @@ Before running this application, ensure you have the following installed:
 ## 🛠️ Installation
 
 ### 1. Clone the repository
+
 ```bash
 git clone <repository-url>
 cd client-management-system
 ```
 
 ### 2. Install Backend Dependencies
+
 ```bash
 cd backend
 npm install
 ```
 
 ### 3. Install Frontend Dependencies
+
 ```bash
 cd ../frontend
 npm install
@@ -60,7 +66,9 @@ npm install
 ### 4. Configure Environment Variables
 
 #### Backend (.env)
+
 Create a `.env` file in the `backend` directory:
+
 ```env
 PORT=5000
 # PostgreSQL Configuration
@@ -76,12 +84,15 @@ NODE_ENV=development
 ```
 
 #### Frontend (.env)
+
 Create a `.env` file in the `frontend` directory:
+
 ```env
 REACT_APP_API_URL=http://localhost:5000/api
 ```
 
 ### 5. Setup PostgreSQL
+
 Make sure PostgreSQL is installed and running:
 
 ```bash
@@ -97,17 +108,20 @@ sudo systemctl start postgresql
 ```
 
 Create the database:
+
 ```bash
 psql postgres -c "CREATE DATABASE client_management;"
 ```
 
 ### 6. Seed Initial Data
+
 ```bash
 cd backend
 npm run seed
 ```
 
 This creates:
+
 - Admin: admin@example.com / admin123
 - Sample User: user@example.com / user123
 
@@ -116,6 +130,7 @@ This creates:
 ### Development Mode
 
 #### Start Backend Server
+
 ```bash
 cd backend
 npm run dev
@@ -123,6 +138,7 @@ npm run dev
 ```
 
 #### Start Frontend Application
+
 ```bash
 cd frontend
 npm start
@@ -132,12 +148,14 @@ npm start
 ### Production Mode
 
 #### Build Frontend
+
 ```bash
 cd frontend
 npm run build
 ```
 
 #### Start Backend
+
 ```bash
 cd backend
 npm start
@@ -148,11 +166,13 @@ npm start
 Use these credentials to login (created by seed script):
 
 **Admin Account** (Full Permissions):
+
 - Email: `admin@example.com`
 - Password: `admin123`
 
 **Sample User Account** (Limited Permissions):
-- Email: `user@example.com`  
+
+- Email: `user@example.com`
 - Password: `user123`
 - Permissions:
   - Products: View, Create
@@ -168,6 +188,7 @@ Use these credentials to login (created by seed script):
 ### Authentication Endpoints
 
 #### Register User
+
 ```http
 POST /api/auth/register
 Content-Type: application/json
@@ -185,6 +206,7 @@ Content-Type: application/json
 ```
 
 #### Login
+
 ```http
 POST /api/auth/login
 Content-Type: application/json
@@ -196,6 +218,7 @@ Content-Type: application/json
 ```
 
 #### Get Current User
+
 ```http
 GET /api/auth/me
 Authorization: Bearer <token>
@@ -256,6 +279,7 @@ DELETE /api/users/:id         # Delete user
 The system has a granular permission structure:
 
 ### Resources
+
 - products
 - orders
 - clients
@@ -263,12 +287,14 @@ The system has a granular permission structure:
 - users
 
 ### Actions per Resource
+
 - view
 - create
 - update
 - delete
 
 ### Example Permission Object
+
 ```json
 {
   "products": {
@@ -358,6 +384,7 @@ client-management-system/
 ## 🧪 Testing
 
 You can test the API using tools like:
+
 - Postman
 - Insomnia
 - cURL
@@ -366,6 +393,7 @@ You can test the API using tools like:
 ## 🔧 Technologies Used
 
 ### Backend
+
 - **Node.js** - JavaScript runtime
 - **Express** - Web framework
 - **PostgreSQL** - Relational database
@@ -375,6 +403,7 @@ You can test the API using tools like:
 - **express-validator** - Input validation
 
 ### Frontend
+
 - **React** - UI library
 - **Redux Toolkit** - State management
 - **React Router** - Routing
@@ -385,24 +414,30 @@ You can test the API using tools like:
 ## 📝 Key Features Implementation
 
 ### Dual Payment Method for Orders
+
 Orders can be paid using multiple payment methods simultaneously:
+
 ```json
 {
   "paymentMethods": [
-    { "method": "cash", "amount": 50.00 },
-    { "method": "card", "amount": 50.00 }
+    { "method": "cash", "amount": 50.0 },
+    { "method": "card", "amount": 50.0 }
   ]
 }
 ```
+
 The system validates that the total of all payment methods equals the order total.
 
 ### Permission-Based UI
+
 The interface dynamically shows/hides features based on user permissions:
+
 - Menu items are filtered based on permissions
 - Action buttons (Create, Edit, Delete) appear only if user has permission
 - Users see only features they have access to
 
 ### Automatic Stock Management
+
 When orders are created, product stock is automatically decremented.
 
 ## 🤝 Contributing
@@ -420,16 +455,19 @@ This project is licensed under the MIT License.
 ## 🐛 Troubleshooting
 
 ### MongoDB Connection Issues
+
 - Ensure MongoDB is running
 - Check the `MONGODB_URI` in your `.env` file
 - Verify MongoDB port (default: 27017)
 
 ### Frontend Can't Connect to Backend
+
 - Ensure backend is running on port 5000
 - Check `REACT_APP_API_URL` in frontend `.env`
 - Verify CORS is enabled in backend
 
 ### Permission Denied Errors
+
 - Check user permissions in the database
 - Verify JWT token is valid and not expired
 - Ensure proper authorization headers are sent

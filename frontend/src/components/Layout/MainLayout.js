@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { Layout, Menu, Button, Dropdown, Avatar } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useState } from "react";
+import { Layout, Menu, Button, Dropdown, Avatar } from "antd";
+import { useNavigate, useLocation } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import {
   UserOutlined,
   ShoppingOutlined,
@@ -13,8 +13,8 @@ import {
   LogoutOutlined,
   MenuFoldOutlined,
   MenuUnfoldOutlined,
-} from '@ant-design/icons';
-import { logout } from '../../store/slices/authSlice';
+} from "@ant-design/icons";
+import { logout } from "../../store/slices/authSlice";
 
 const { Header, Sider, Content } = Layout;
 
@@ -27,61 +27,74 @@ const MainLayout = ({ children }) => {
 
   const handleLogout = () => {
     dispatch(logout());
-    navigate('/login');
+    navigate("/login");
   };
 
   const hasPermission = (resource, action) => {
-    if (user?.role === 'admin') return true;
+    if (user?.role === "admin") return true;
     return user?.permissions?.[resource]?.[action] || false;
   };
 
   const menuItems = [
     {
-      key: '/',
+      key: "/",
       icon: <DashboardOutlined />,
-      label: 'Dashboard',
+      label: "Dashboard",
     },
-    hasPermission('products', 'view') && {
-      key: '/products',
+    hasPermission("products", "view") && {
+      key: "/products",
       icon: <ShoppingOutlined />,
-      label: 'Products',
+      label: "Products",
     },
-    hasPermission('orders', 'view') && {
-      key: '/orders',
+    hasPermission("orders", "view") && {
+      key: "/orders",
       icon: <ShoppingCartOutlined />,
-      label: 'Orders',
+      label: "Orders",
     },
-    hasPermission('clients', 'view') && {
-      key: '/clients',
+    hasPermission("clients", "view") && {
+      key: "/clients",
       icon: <TeamOutlined />,
-      label: 'Clients',
+      label: "Clients",
     },
-    hasPermission('comments', 'view') && {
-      key: '/comments',
+    hasPermission("comments", "view") && {
+      key: "/comments",
       icon: <CommentOutlined />,
-      label: 'Comments',
+      label: "Comments",
     },
-    hasPermission('users', 'view') && {
-      key: '/users',
+    hasPermission("users", "view") && {
+      key: "/users",
       icon: <UsergroupAddOutlined />,
-      label: 'Users',
+      label: "Users",
     },
   ].filter(Boolean);
 
   const userMenuItems = [
     {
-      key: 'logout',
+      key: "logout",
       icon: <LogoutOutlined />,
-      label: 'Logout',
+      label: "Logout",
       onClick: handleLogout,
     },
   ];
 
   return (
     <Layout className="min-h-screen">
-      <Sider trigger={null} collapsible collapsed={collapsed} className="bg-gray-800">
-        <div className="h-16 flex items-center justify-center text-white text-xl font-bold">
-          {collapsed ? 'CMS' : 'Client Management'}
+      <Sider
+        trigger={null}
+        collapsible
+        collapsed={collapsed}
+        className="bg-gray-800"
+        style={{
+          height: "100vh",
+          position: "fixed",
+          left: 0,
+          top: 0,
+          bottom: 0,
+          overflow: "auto",
+        }}
+      >
+        <div className="h-16 flex items-center justify-center text-white text-xl font-bold border-b border-gray-700">
+          {collapsed ? "CMS" : "Client Management"}
         </div>
         <Menu
           theme="dark"
@@ -89,10 +102,20 @@ const MainLayout = ({ children }) => {
           selectedKeys={[location.pathname]}
           items={menuItems}
           onClick={({ key }) => navigate(key)}
+          className="border-0"
+          style={{ height: "calc(100% - 64px)", borderRight: 0 }}
         />
       </Sider>
-      <Layout>
-        <Header className="bg-white shadow-md px-4 flex justify-between items-center">
+      <Layout
+        style={{
+          marginLeft: collapsed ? 80 : 200,
+          transition: "margin-left 0.2s",
+        }}
+      >
+        <Header
+          className="bg-white shadow-md px-4 flex justify-between items-center"
+          style={{ position: "sticky", top: 0, zIndex: 1 }}
+        >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -104,7 +127,10 @@ const MainLayout = ({ children }) => {
               {user?.name} <span className="text-gray-500">({user?.role})</span>
             </span>
             <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
-              <Avatar icon={<UserOutlined />} className="cursor-pointer bg-blue-500" />
+              <Avatar
+                icon={<UserOutlined />}
+                className="cursor-pointer bg-blue-500"
+              />
             </Dropdown>
           </div>
         </Header>

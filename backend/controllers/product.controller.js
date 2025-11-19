@@ -1,4 +1,4 @@
-const { Product, User } = require('../models');
+const { Product, User } = require("../models");
 
 // @desc    Get all products
 // @route   GET /api/products
@@ -6,23 +6,27 @@ const { Product, User } = require('../models');
 exports.getProducts = async (req, res) => {
   try {
     const products = await Product.findAll({
-      include: [{
-        model: User,
-        as: 'creator',
-        attributes: ['id', 'name', 'email']
-      }],
-      order: [['createdAt', 'DESC']]
+      include: [
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "name", "email"],
+          required: false,
+        },
+      ],
+      order: [["createdAt", "DESC"]],
     });
 
     res.json({
       success: true,
       count: products.length,
-      data: products
+      data: products,
     });
   } catch (error) {
+    console.error("Get products error:", error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -33,28 +37,30 @@ exports.getProducts = async (req, res) => {
 exports.getProduct = async (req, res) => {
   try {
     const product = await Product.findByPk(req.params.id, {
-      include: [{
-        model: User,
-        as: 'creator',
-        attributes: ['id', 'name', 'email']
-      }]
+      include: [
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "name", "email"],
+        },
+      ],
     });
 
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: "Product not found",
       });
     }
 
     res.json({
       success: true,
-      data: product
+      data: product,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -64,15 +70,18 @@ exports.getProduct = async (req, res) => {
 // @access  Private (requires 'create' permission for 'products')
 exports.createProduct = async (req, res) => {
   try {
-    const { name, description, sku, price, stock, isActive } = req.body;
+    const { name, description, sku, price, category, stock, isActive } =
+      req.body;
 
     // Check if product with SKU exists
-    const skuExists = await Product.findOne({ where: { sku } });
-    if (skuExists) {
-      return res.status(400).json({
-        success: false,
-        message: 'Product with this SKU already exists'
-      });
+    if (sku) {
+      const skuExists = await Product.findOne({ where: { sku } });
+      if (skuExists) {
+        return res.status(400).json({
+          success: false,
+          message: "Product with this SKU already exists",
+        });
+      }
     }
 
     const product = await Product.create({
@@ -80,28 +89,33 @@ exports.createProduct = async (req, res) => {
       description,
       sku,
       price,
+      category,
       stock: stock || 0,
       isActive: isActive !== undefined ? isActive : true,
-      createdBy: req.user.id
+      createdBy: req.user.id,
     });
 
     // Fetch the complete product with creator info
     const productWithCreator = await Product.findByPk(product.id, {
-      include: [{
-        model: User,
-        as: 'creator',
-        attributes: ['id', 'name', 'email']
-      }]
+      include: [
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "name", "email"],
+          required: false,
+        },
+      ],
     });
 
     res.status(201).json({
       success: true,
-      data: productWithCreator
+      data: productWithCreator,
     });
   } catch (error) {
+    console.error("Create product error:", error);
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -116,7 +130,7 @@ exports.updateProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: "Product not found",
       });
     }
 
@@ -128,7 +142,7 @@ exports.updateProduct = async (req, res) => {
       if (skuExists) {
         return res.status(400).json({
           success: false,
-          message: 'SKU already in use'
+          message: "SKU already in use",
         });
       }
     }
@@ -146,21 +160,23 @@ exports.updateProduct = async (req, res) => {
 
     // Fetch updated product with creator info
     const updatedProduct = await Product.findByPk(product.id, {
-      include: [{
-        model: User,
-        as: 'creator',
-        attributes: ['id', 'name', 'email']
-      }]
+      include: [
+        {
+          model: User,
+          as: "creator",
+          attributes: ["id", "name", "email"],
+        },
+      ],
     });
 
     res.json({
       success: true,
-      data: updatedProduct
+      data: updatedProduct,
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };
@@ -175,7 +191,7 @@ exports.deleteProduct = async (req, res) => {
     if (!product) {
       return res.status(404).json({
         success: false,
-        message: 'Product not found'
+        message: "Product not found",
       });
     }
 
@@ -183,12 +199,12 @@ exports.deleteProduct = async (req, res) => {
 
     res.json({
       success: true,
-      data: {}
+      data: {},
     });
   } catch (error) {
     res.status(500).json({
       success: false,
-      message: error.message
+      message: error.message,
     });
   }
 };

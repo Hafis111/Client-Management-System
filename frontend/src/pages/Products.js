@@ -1,13 +1,24 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Button, Modal, Form, Input, InputNumber, message, Popconfirm, Space, Tag } from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import {
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  InputNumber,
+  message,
+  Popconfirm,
+  Space,
+  Tag,
+} from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchProducts,
   createProduct,
   updateProduct,
   deleteProduct,
-} from '../store/slices/productSlice';
+} from "../store/slices/productSlice";
 
 const Products = () => {
   const dispatch = useDispatch();
@@ -17,9 +28,12 @@ const Products = () => {
   const [editingProduct, setEditingProduct] = useState(null);
   const [form] = Form.useForm();
 
-  const canCreate = user?.role === 'admin' || user?.permissions?.products?.create;
-  const canUpdate = user?.role === 'admin' || user?.permissions?.products?.update;
-  const canDelete = user?.role === 'admin' || user?.permissions?.products?.delete;
+  const canCreate =
+    user?.role === "admin" || user?.permissions?.products?.create;
+  const canUpdate =
+    user?.role === "admin" || user?.permissions?.products?.update;
+  const canDelete =
+    user?.role === "admin" || user?.permissions?.products?.delete;
 
   useEffect(() => {
     dispatch(fetchProducts());
@@ -40,39 +54,41 @@ const Products = () => {
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteProduct(id)).unwrap();
-      message.success('Product deleted successfully');
+      message.success("Product deleted successfully");
     } catch (error) {
-      message.error(error || 'Failed to delete product');
+      message.error(error || "Failed to delete product");
     }
   };
 
   const handleSubmit = async (values) => {
     try {
       if (editingProduct) {
-        await dispatch(updateProduct({ id: editingProduct._id, productData: values })).unwrap();
-        message.success('Product updated successfully');
+        await dispatch(
+          updateProduct({ id: editingProduct.id, productData: values })
+        ).unwrap();
+        message.success("Product updated successfully");
       } else {
         await dispatch(createProduct(values)).unwrap();
-        message.success('Product created successfully');
+        message.success("Product created successfully");
       }
       setIsModalOpen(false);
       form.resetFields();
     } catch (error) {
-      message.error(error || 'Operation failed');
+      message.error(error || "Operation failed");
     }
   };
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Category',
-      dataIndex: 'category',
-      key: 'category',
+      title: "Category",
+      dataIndex: "category",
+      key: "category",
       filters: [...new Set(items.map((item) => item.category))].map((cat) => ({
         text: cat,
         value: cat,
@@ -80,44 +96,46 @@ const Products = () => {
       onFilter: (value, record) => record.category === value,
     },
     {
-      title: 'Price',
-      dataIndex: 'price',
-      key: 'price',
-      render: (price) => `$${price.toFixed(2)}`,
-      sorter: (a, b) => a.price - b.price,
+      title: "Price",
+      dataIndex: "price",
+      key: "price",
+      render: (price) => `$${parseFloat(price).toFixed(2)}`,
+      sorter: (a, b) => parseFloat(a.price) - parseFloat(b.price),
     },
     {
-      title: 'Stock',
-      dataIndex: 'stock',
-      key: 'stock',
+      title: "Stock",
+      dataIndex: "stock",
+      key: "stock",
       render: (stock) => (
-        <Tag color={stock > 10 ? 'green' : stock > 0 ? 'orange' : 'red'}>
+        <Tag color={stock > 10 ? "green" : stock > 0 ? "orange" : "red"}>
           {stock}
         </Tag>
       ),
       sorter: (a, b) => a.stock - b.stock,
     },
     {
-      title: 'SKU',
-      dataIndex: 'sku',
-      key: 'sku',
+      title: "SKU",
+      dataIndex: "sku",
+      key: "sku",
     },
     {
-      title: 'Status',
-      dataIndex: 'isActive',
-      key: 'isActive',
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
       render: (isActive) => (
-        <Tag color={isActive ? 'green' : 'red'}>{isActive ? 'Active' : 'Inactive'}</Tag>
+        <Tag color={isActive ? "green" : "red"}>
+          {isActive ? "Active" : "Inactive"}
+        </Tag>
       ),
       filters: [
-        { text: 'Active', value: true },
-        { text: 'Inactive', value: false },
+        { text: "Active", value: true },
+        { text: "Inactive", value: false },
       ],
       onFilter: (value, record) => record.isActive === value,
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space>
           {canUpdate && (
@@ -133,11 +151,16 @@ const Products = () => {
           {canDelete && (
             <Popconfirm
               title="Are you sure you want to delete this product?"
-              onConfirm={() => handleDelete(record._id)}
+              onConfirm={() => handleDelete(record.id)}
               okText="Yes"
               cancelText="No"
             >
-              <Button type="primary" danger icon={<DeleteOutlined />} size="small">
+              <Button
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+              >
                 Delete
               </Button>
             </Popconfirm>
@@ -164,11 +187,11 @@ const Products = () => {
         rowKey="_id"
         loading={loading}
         pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: "max-content" }}
       />
 
       <Modal
-        title={editingProduct ? 'Edit Product' : 'Add Product'}
+        title={editingProduct ? "Edit Product" : "Add Product"}
         open={isModalOpen}
         onCancel={() => {
           setIsModalOpen(false);
@@ -180,7 +203,7 @@ const Products = () => {
           <Form.Item
             name="name"
             label="Product Name"
-            rules={[{ required: true, message: 'Please enter product name' }]}
+            rules={[{ required: true, message: "Please enter product name" }]}
           >
             <Input />
           </Form.Item>
@@ -188,7 +211,7 @@ const Products = () => {
           <Form.Item
             name="description"
             label="Description"
-            rules={[{ required: true, message: 'Please enter description' }]}
+            rules={[{ required: true, message: "Please enter description" }]}
           >
             <Input.TextArea rows={3} />
           </Form.Item>
@@ -196,7 +219,7 @@ const Products = () => {
           <Form.Item
             name="category"
             label="Category"
-            rules={[{ required: true, message: 'Please enter category' }]}
+            rules={[{ required: true, message: "Please enter category" }]}
           >
             <Input />
           </Form.Item>
@@ -204,7 +227,7 @@ const Products = () => {
           <Form.Item
             name="price"
             label="Price"
-            rules={[{ required: true, message: 'Please enter price' }]}
+            rules={[{ required: true, message: "Please enter price" }]}
           >
             <InputNumber min={0} step={0.01} prefix="$" className="w-full" />
           </Form.Item>
@@ -212,7 +235,7 @@ const Products = () => {
           <Form.Item
             name="stock"
             label="Stock Quantity"
-            rules={[{ required: true, message: 'Please enter stock quantity' }]}
+            rules={[{ required: true, message: "Please enter stock quantity" }]}
           >
             <InputNumber min={0} className="w-full" />
           </Form.Item>
@@ -226,7 +249,7 @@ const Products = () => {
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              {editingProduct ? 'Update' : 'Create'}
+              {editingProduct ? "Update" : "Create"}
             </Button>
           </Form.Item>
         </Form>

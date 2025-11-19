@@ -3,6 +3,7 @@
 ## 🚀 Quick Start Commands
 
 ### First Time Setup
+
 ```bash
 # 1. Start MongoDB
 brew services start mongodb-community
@@ -24,19 +25,21 @@ cd frontend && npm start
 ```
 
 ### Access
+
 - **Frontend**: http://localhost:3000
 - **Backend API**: http://localhost:5000/api
 
 ## 🔑 Login Credentials
 
-| Role | Email | Password | Access Level |
-|------|-------|----------|--------------|
-| Admin | admin@example.com | admin123 | Full access to all features |
-| User | user@example.com | user123 | Limited permissions (Products: View/Create, Orders: View/Create/Update, Comments: Full, Clients: View/Create/Update) |
+| Role  | Email             | Password | Access Level                                                                                                         |
+| ----- | ----------------- | -------- | -------------------------------------------------------------------------------------------------------------------- |
+| Admin | admin@example.com | admin123 | Full access to all features                                                                                          |
+| User  | user@example.com  | user123  | Limited permissions (Products: View/Create, Orders: View/Create/Update, Comments: Full, Clients: View/Create/Update) |
 
 ## 📋 Features Checklist
 
 ### ✅ Implemented Features
+
 - [x] **Products Management**: Full CRUD operations
 - [x] **Orders Management**: Dual payment methods (Cash + Card)
 - [x] **Clients Management**: Full CRUD operations
@@ -52,18 +55,21 @@ cd frontend && npm start
 ## 🎯 Test Scenarios
 
 ### 1. Test Admin Access
+
 - Login as admin
 - Access all menu items
 - Create a new user with custom permissions
 - Perform CRUD on all resources
 
 ### 2. Test Limited User Permissions
+
 - Login as sample user
 - Notice restricted menu (no Users section)
 - Try to delete a product (button should not appear)
 - Create an order successfully
 
 ### 3. Test Dual Payment Order
+
 1. Go to Orders → Create Order
 2. Select a client
 3. Add product(s)
@@ -74,6 +80,7 @@ cd frontend && npm start
 6. Submit order
 
 ### 4. Test Permission System
+
 1. Login as admin
 2. Go to Users
 3. Create new user with specific permissions:
@@ -86,11 +93,13 @@ cd frontend && npm start
 ## 📊 API Endpoints Summary
 
 ### Authentication
+
 - `POST /api/auth/register` - Register new user
 - `POST /api/auth/login` - Login
 - `GET /api/auth/me` - Get current user
 
 ### Resources (All require authentication + permissions)
+
 - `/api/products` - Products CRUD
 - `/api/orders` - Orders CRUD
 - `/api/clients` - Clients CRUD
@@ -100,6 +109,7 @@ cd frontend && npm start
 ## 🛠️ Development Commands
 
 ### Backend
+
 ```bash
 cd backend
 npm run dev        # Start with nodemon
@@ -109,6 +119,7 @@ npm run seed:user  # Create sample user only
 ```
 
 ### Frontend
+
 ```bash
 cd frontend
 npm start          # Start development server
@@ -117,13 +128,13 @@ npm run build      # Build for production
 
 ## 🔍 Troubleshooting
 
-| Problem | Solution |
-|---------|----------|
-| Can't login | Run `npm run seed` in backend folder |
-| MongoDB error | Ensure MongoDB is running: `brew services start mongodb-community` |
-| Port in use | Change PORT in backend/.env |
-| Permission denied | Login as admin and update user permissions |
-| Frontend can't connect | Check backend is running on port 5000 |
+| Problem                | Solution                                                           |
+| ---------------------- | ------------------------------------------------------------------ |
+| Can't login            | Run `npm run seed` in backend folder                               |
+| MongoDB error          | Ensure MongoDB is running: `brew services start mongodb-community` |
+| Port in use            | Change PORT in backend/.env                                        |
+| Permission denied      | Login as admin and update user permissions                         |
+| Frontend can't connect | Check backend is running on port 5000                              |
 
 ## 📁 Project Structure
 

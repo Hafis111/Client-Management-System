@@ -12,7 +12,12 @@
     "preflight": "node preflight-check.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": ["express", "postgresql", "jwt", "rest-api"],
+  "keywords": [
+    "express",
+    "postgresql",
+    "jwt",
+    "rest-api"
+  ],
   "author": "",
   "license": "ISC",
   "dependencies": {

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Button,
@@ -12,10 +12,15 @@ import {
   Space,
   Tag,
   Card,
-} from 'antd';
-import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchUsers, createUser, updateUser, deleteUser } from '../store/slices/userSlice';
+} from "antd";
+import { PlusOutlined, EditOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchUsers,
+  createUser,
+  updateUser,
+  deleteUser,
+} from "../store/slices/userSlice";
 
 const { Option } = Select;
 
@@ -27,12 +32,12 @@ const Users = () => {
   const [editingUser, setEditingUser] = useState(null);
   const [form] = Form.useForm();
 
-  const canCreate = user?.role === 'admin' || user?.permissions?.users?.create;
-  const canUpdate = user?.role === 'admin' || user?.permissions?.users?.update;
-  const canDelete = user?.role === 'admin' || user?.permissions?.users?.delete;
+  const canCreate = user?.role === "admin" || user?.permissions?.users?.create;
+  const canUpdate = user?.role === "admin" || user?.permissions?.users?.update;
+  const canDelete = user?.role === "admin" || user?.permissions?.users?.delete;
 
-  const resources = ['products', 'orders', 'comments', 'clients', 'users'];
-  const actions = ['view', 'create', 'update', 'delete'];
+  const resources = ["products", "orders", "comments", "clients", "users"];
+  const actions = ["view", "create", "update", "delete"];
 
   useEffect(() => {
     dispatch(fetchUsers());
@@ -58,9 +63,9 @@ const Users = () => {
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteUser(id)).unwrap();
-      message.success('User deleted successfully');
+      message.success("User deleted successfully");
     } catch (error) {
-      message.error(error || 'Failed to delete user');
+      message.error(error || "Failed to delete user");
     }
   };
 
@@ -78,57 +83,59 @@ const Users = () => {
       }
 
       if (editingUser) {
-        await dispatch(updateUser({ id: editingUser._id, userData })).unwrap();
-        message.success('User updated successfully');
+        await dispatch(updateUser({ id: editingUser.id, userData })).unwrap();
+        message.success("User updated successfully");
       } else {
         await dispatch(createUser(userData)).unwrap();
-        message.success('User created successfully');
+        message.success("User created successfully");
       }
       setIsModalOpen(false);
       form.resetFields();
     } catch (error) {
-      message.error(error || 'Operation failed');
+      message.error(error || "Operation failed");
     }
   };
 
   const columns = [
     {
-      title: 'Name',
-      dataIndex: 'name',
-      key: 'name',
+      title: "Name",
+      dataIndex: "name",
+      key: "name",
       sorter: (a, b) => a.name.localeCompare(b.name),
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
     },
     {
-      title: 'Role',
-      dataIndex: 'role',
-      key: 'role',
+      title: "Role",
+      dataIndex: "role",
+      key: "role",
       render: (role) => (
-        <Tag color={role === 'admin' ? 'red' : 'blue'} className="uppercase">
+        <Tag color={role === "admin" ? "red" : "blue"} className="uppercase">
           {role}
         </Tag>
       ),
       filters: [
-        { text: 'Admin', value: 'admin' },
-        { text: 'User', value: 'user' },
+        { text: "Admin", value: "admin" },
+        { text: "User", value: "user" },
       ],
       onFilter: (value, record) => record.role === value,
     },
     {
-      title: 'Status',
-      dataIndex: 'isActive',
-      key: 'isActive',
+      title: "Status",
+      dataIndex: "isActive",
+      key: "isActive",
       render: (isActive) => (
-        <Tag color={isActive ? 'green' : 'red'}>{isActive ? 'Active' : 'Inactive'}</Tag>
+        <Tag color={isActive ? "green" : "red"}>
+          {isActive ? "Active" : "Inactive"}
+        </Tag>
       ),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space>
           {canUpdate && (
@@ -141,14 +148,19 @@ const Users = () => {
               Edit
             </Button>
           )}
-          {canDelete && record._id !== user._id && (
+          {canDelete && record.id !== user.id && (
             <Popconfirm
               title="Are you sure you want to delete this user?"
-              onConfirm={() => handleDelete(record._id)}
+              onConfirm={() => handleDelete(record.id)}
               okText="Yes"
               cancelText="No"
             >
-              <Button type="primary" danger icon={<DeleteOutlined />} size="small">
+              <Button
+                type="primary"
+                danger
+                icon={<DeleteOutlined />}
+                size="small"
+              >
                 Delete
               </Button>
             </Popconfirm>
@@ -175,11 +187,11 @@ const Users = () => {
         rowKey="_id"
         loading={loading}
         pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: "max-content" }}
       />
 
       <Modal
-        title={editingUser ? 'Edit User' : 'Add User'}
+        title={editingUser ? "Edit User" : "Add User"}
         open={isModalOpen}
         onCancel={() => {
           setIsModalOpen(false);
@@ -192,7 +204,7 @@ const Users = () => {
           <Form.Item
             name="name"
             label="Name"
-            rules={[{ required: true, message: 'Please enter name' }]}
+            rules={[{ required: true, message: "Please enter name" }]}
           >
             <Input />
           </Form.Item>
@@ -201,8 +213,8 @@ const Users = () => {
             name="email"
             label="Email"
             rules={[
-              { required: true, message: 'Please enter email' },
-              { type: 'email', message: 'Please enter a valid email' },
+              { required: true, message: "Please enter email" },
+              { type: "email", message: "Please enter a valid email" },
             ]}
           >
             <Input />
@@ -213,8 +225,8 @@ const Users = () => {
               name="password"
               label="Password"
               rules={[
-                { required: true, message: 'Please enter password' },
-                { min: 6, message: 'Password must be at least 6 characters' },
+                { required: true, message: "Please enter password" },
+                { min: 6, message: "Password must be at least 6 characters" },
               ]}
             >
               <Input.Password />
@@ -224,7 +236,7 @@ const Users = () => {
           <Form.Item
             name="role"
             label="Role"
-            rules={[{ required: true, message: 'Please select role' }]}
+            rules={[{ required: true, message: "Please select role" }]}
           >
             <Select>
               <Option value="user">User</Option>
@@ -234,19 +246,23 @@ const Users = () => {
 
           <Form.Item
             noStyle
-            shouldUpdate={(prevValues, currentValues) => prevValues.role !== currentValues.role}
+            shouldUpdate={(prevValues, currentValues) =>
+              prevValues.role !== currentValues.role
+            }
           >
             {({ getFieldValue }) =>
-              getFieldValue('role') === 'user' ? (
+              getFieldValue("role") === "user" ? (
                 <Card title="Permissions" className="mb-4">
                   {resources.map((resource) => (
                     <div key={resource} className="mb-4">
-                      <div className="font-semibold capitalize mb-2">{resource}</div>
+                      <div className="font-semibold capitalize mb-2">
+                        {resource}
+                      </div>
                       <div className="grid grid-cols-4 gap-2">
                         {actions.map((action) => (
                           <Form.Item
                             key={`${resource}-${action}`}
-                            name={['permissions', resource, action]}
+                            name={["permissions", resource, action]}
                             valuePropName="checked"
                             className="mb-0"
                           >
@@ -266,7 +282,7 @@ const Users = () => {
               Cancel
             </Button>
             <Button type="primary" htmlType="submit">
-              {editingUser ? 'Update' : 'Create'}
+              {editingUser ? "Update" : "Create"}
             </Button>
           </Form.Item>
         </Form>

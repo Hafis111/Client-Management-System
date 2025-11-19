@@ -1,7 +1,7 @@
-const express = require('express');
-const cors = require('cors');
-const dotenv = require('dotenv');
-const { connectDB } = require('./config/database');
+const express = require("express");
+const cors = require("cors");
+const dotenv = require("dotenv");
+const { connectDB } = require("./config/database");
 
 // Load environment variables
 dotenv.config();
@@ -11,26 +11,31 @@ connectDB();
 
 const app = express();
 
-// Middleware
-app.use(cors());
+// Middleware - Configure CORS to accept both ports
+app.use(
+  cors({
+    origin: ["http://localhost:3000", "http://localhost:3001"],
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Routes
-app.use('/api/auth', require('./routes/auth.routes'));
-app.use('/api/users', require('./routes/user.routes'));
-app.use('/api/clients', require('./routes/client.routes'));
-app.use('/api/products', require('./routes/product.routes'));
-app.use('/api/orders', require('./routes/order.routes'));
-app.use('/api/comments', require('./routes/comment.routes'));
+app.use("/api/auth", require("./routes/auth.routes"));
+app.use("/api/users", require("./routes/user.routes"));
+app.use("/api/clients", require("./routes/client.routes"));
+app.use("/api/products", require("./routes/product.routes"));
+app.use("/api/orders", require("./routes/order.routes"));
+app.use("/api/comments", require("./routes/comment.routes"));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.statusCode || 500).json({
     success: false,
-    message: err.message || 'Server Error',
-    errors: err.errors || []
+    message: err.message || "Server Error",
+    errors: err.errors || [],
   });
 });
 
@@ -38,7 +43,7 @@ app.use((err, req, res, next) => {
 app.use((req, res) => {
   res.status(404).json({
     success: false,
-    message: 'Route not found'
+    message: "Route not found",
   });
 });
 

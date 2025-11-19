@@ -1,22 +1,27 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
   Table,
   Button,
   Modal,
   Form,
   Select,
+  Input,
   InputNumber,
   message,
   Space,
   Tag,
   Card,
   Divider,
-} from 'antd';
-import { PlusOutlined, EyeOutlined, DeleteOutlined } from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchOrders, createOrder, deleteOrder } from '../store/slices/orderSlice';
-import { fetchClients } from '../store/slices/clientSlice';
-import { fetchProducts } from '../store/slices/productSlice';
+} from "antd";
+import { PlusOutlined, EyeOutlined, DeleteOutlined } from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchOrders,
+  createOrder,
+  deleteOrder,
+} from "../store/slices/orderSlice";
+import { fetchClients } from "../store/slices/clientSlice";
+import { fetchProducts } from "../store/slices/productSlice";
 
 const { Option } = Select;
 
@@ -29,11 +34,15 @@ const Orders = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [viewingOrder, setViewingOrder] = useState(null);
   const [form] = Form.useForm();
-  const [orderItems, setOrderItems] = useState([{ product: null, quantity: 1 }]);
-  const [paymentMethods, setPaymentMethods] = useState([{ method: 'cash', amount: 0 }]);
+  const [orderItems, setOrderItems] = useState([
+    { product: null, quantity: 1 },
+  ]);
+  const [paymentMethods, setPaymentMethods] = useState([
+    { method: "cash", amount: 0 },
+  ]);
 
-  const canCreate = user?.role === 'admin' || user?.permissions?.orders?.create;
-  const canDelete = user?.role === 'admin' || user?.permissions?.orders?.delete;
+  const canCreate = user?.role === "admin" || user?.permissions?.orders?.create;
+  const canDelete = user?.role === "admin" || user?.permissions?.orders?.delete;
 
   useEffect(() => {
     dispatch(fetchOrders());
@@ -43,8 +52,8 @@ const Orders = () => {
 
   const calculateTotal = () => {
     return orderItems.reduce((total, item) => {
-      const product = products.find((p) => p._id === item.product);
-      return total + (product ? product.price * item.quantity : 0);
+      const product = products.find((p) => p.id === item.product);
+      return total + (product ? parseFloat(product.price) * item.quantity : 0);
     }, 0);
   };
 
@@ -63,7 +72,7 @@ const Orders = () => {
   };
 
   const handleAddPayment = () => {
-    setPaymentMethods([...paymentMethods, { method: 'cash', amount: 0 }]);
+    setPaymentMethods([...paymentMethods, { method: "cash", amount: 0 }]);
   };
 
   const handleRemovePayment = (index) => {
@@ -81,14 +90,14 @@ const Orders = () => {
     const paymentTotal = paymentMethods.reduce((sum, pm) => sum + pm.amount, 0);
 
     if (Math.abs(paymentTotal - total) > 0.01) {
-      message.error('Payment total must equal order total');
+      message.error("Payment total must equal order total");
       return;
     }
 
     const orderData = {
-      client: values.client,
+      clientId: values.client,
       items: orderItems.map((item) => ({
-        product: item.product,
+        productId: item.product,
         quantity: item.quantity,
       })),
       paymentMethods,
@@ -97,80 +106,80 @@ const Orders = () => {
 
     try {
       await dispatch(createOrder(orderData)).unwrap();
-      message.success('Order created successfully');
+      message.success("Order created successfully");
       setIsModalOpen(false);
       form.resetFields();
       setOrderItems([{ product: null, quantity: 1 }]);
-      setPaymentMethods([{ method: 'cash', amount: 0 }]);
+      setPaymentMethods([{ method: "cash", amount: 0 }]);
     } catch (error) {
-      message.error(error || 'Failed to create order');
+      message.error(error || "Failed to create order");
     }
   };
 
   const handleDelete = async (id) => {
     try {
       await dispatch(deleteOrder(id)).unwrap();
-      message.success('Order deleted successfully');
+      message.success("Order deleted successfully");
     } catch (error) {
-      message.error(error || 'Failed to delete order');
+      message.error(error || "Failed to delete order");
     }
   };
 
   const columns = [
     {
-      title: 'Order Number',
-      dataIndex: 'orderNumber',
-      key: 'orderNumber',
+      title: "Order Number",
+      dataIndex: "orderNumber",
+      key: "orderNumber",
     },
     {
-      title: 'Client',
-      dataIndex: ['client', 'name'],
-      key: 'client',
+      title: "Client",
+      dataIndex: ["client", "name"],
+      key: "client",
     },
     {
-      title: 'Items',
-      dataIndex: 'items',
-      key: 'items',
+      title: "Items",
+      dataIndex: "items",
+      key: "items",
       render: (items) => items.length,
     },
     {
-      title: 'Total Amount',
-      dataIndex: 'totalAmount',
-      key: 'totalAmount',
-      render: (amount) => `$${amount.toFixed(2)}`,
-      sorter: (a, b) => a.totalAmount - b.totalAmount,
+      title: "Total Amount",
+      dataIndex: "totalAmount",
+      key: "totalAmount",
+      render: (amount) => `$${parseFloat(amount).toFixed(2)}`,
+      sorter: (a, b) => parseFloat(a.totalAmount) - parseFloat(b.totalAmount),
     },
     {
-      title: 'Status',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Status",
+      dataIndex: "status",
+      key: "status",
       render: (status) => {
         const colors = {
-          pending: 'orange',
-          processing: 'blue',
-          completed: 'green',
-          cancelled: 'red',
+          pending: "orange",
+          processing: "blue",
+          completed: "green",
+          cancelled: "red",
         };
         return <Tag color={colors[status]}>{status.toUpperCase()}</Tag>;
       },
       filters: [
-        { text: 'Pending', value: 'pending' },
-        { text: 'Processing', value: 'processing' },
-        { text: 'Completed', value: 'completed' },
-        { text: 'Cancelled', value: 'cancelled' },
+        { text: "Pending", value: "pending" },
+        { text: "Processing", value: "processing" },
+        { text: "Completed", value: "completed" },
+        { text: "Cancelled", value: "cancelled" },
       ],
       onFilter: (value, record) => record.status === value,
     },
     {
-      title: 'Created',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: "Created",
+      dataIndex: "createdAt",
+      key: "createdAt",
       render: (date) => new Date(date).toLocaleDateString(),
       sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
     {
-      title: 'Actions',
-      key: 'actions',
+      title: "Actions",
+      key: "actions",
       render: (_, record) => (
         <Space>
           <Button
@@ -187,7 +196,7 @@ const Orders = () => {
               danger
               icon={<DeleteOutlined />}
               size="small"
-              onClick={() => handleDelete(record._id)}
+              onClick={() => handleDelete(record.id)}
             >
               Delete
             </Button>
@@ -202,7 +211,11 @@ const Orders = () => {
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-3xl font-bold">Orders</h1>
         {canCreate && (
-          <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalOpen(true)}>
+          <Button
+            type="primary"
+            icon={<PlusOutlined />}
+            onClick={() => setIsModalOpen(true)}
+          >
             Create Order
           </Button>
         )}
@@ -214,7 +227,7 @@ const Orders = () => {
         rowKey="_id"
         loading={loading}
         pagination={{ pageSize: 10 }}
-        scroll={{ x: 'max-content' }}
+        scroll={{ x: "max-content" }}
       />
 
       {/* Create Order Modal */}
@@ -225,7 +238,7 @@ const Orders = () => {
           setIsModalOpen(false);
           form.resetFields();
           setOrderItems([{ product: null, quantity: 1 }]);
-          setPaymentMethods([{ method: 'cash', amount: 0 }]);
+          setPaymentMethods([{ method: "cash", amount: 0 }]);
         }}
         footer={null}
         width={800}
@@ -234,13 +247,17 @@ const Orders = () => {
           <Form.Item
             name="client"
             label="Select Client"
-            rules={[{ required: true, message: 'Please select a client' }]}
+            rules={[{ required: true, message: "Please select a client" }]}
           >
-            <Select placeholder="Select client" showSearch filterOption={(input, option) =>
-              option.children.toLowerCase().includes(input.toLowerCase())
-            }>
+            <Select
+              placeholder="Select client"
+              showSearch
+              filterOption={(input, option) =>
+                option.children.toLowerCase().includes(input.toLowerCase())
+              }
+            >
               {clients.map((client) => (
-                <Option key={client._id} value={client._id}>
+                <Option key={client.id} value={client.id}>
                   {client.name} - {client.email}
                 </Option>
               ))}
@@ -253,7 +270,7 @@ const Orders = () => {
               <Select
                 placeholder="Select product"
                 value={item.product}
-                onChange={(value) => handleItemChange(index, 'product', value)}
+                onChange={(value) => handleItemChange(index, "product", value)}
                 className="flex-1"
                 showSearch
                 filterOption={(input, option) =>
@@ -261,15 +278,16 @@ const Orders = () => {
                 }
               >
                 {products.map((product) => (
-                  <Option key={product._id} value={product._id}>
-                    {product.name} - ${product.price} (Stock: {product.stock})
+                  <Option key={product.id} value={product.id}>
+                    {product.name} - ${parseFloat(product.price).toFixed(2)}{" "}
+                    (Stock: {product.stock})
                   </Option>
                 ))}
               </Select>
               <InputNumber
                 min={1}
                 value={item.quantity}
-                onChange={(value) => handleItemChange(index, 'quantity', value)}
+                onChange={(value) => handleItemChange(index, "quantity", value)}
                 placeholder="Qty"
                 className="w-24"
               />
@@ -289,7 +307,9 @@ const Orders = () => {
             <div key={index} className="flex gap-2 mb-2">
               <Select
                 value={payment.method}
-                onChange={(value) => handlePaymentChange(index, 'method', value)}
+                onChange={(value) =>
+                  handlePaymentChange(index, "method", value)
+                }
                 className="w-32"
               >
                 <Option value="cash">Cash</Option>
@@ -299,7 +319,9 @@ const Orders = () => {
                 min={0}
                 step={0.01}
                 value={payment.amount}
-                onChange={(value) => handlePaymentChange(index, 'amount', value)}
+                onChange={(value) =>
+                  handlePaymentChange(index, "amount", value)
+                }
                 placeholder="Amount"
                 prefix="$"
                 className="flex-1"
@@ -311,19 +333,29 @@ const Orders = () => {
               )}
             </div>
           ))}
-          <Button type="dashed" onClick={handleAddPayment} block className="mb-4">
+          <Button
+            type="dashed"
+            onClick={handleAddPayment}
+            block
+            className="mb-4"
+          >
             + Add Payment Method
           </Button>
 
           <Card className="mb-4 bg-gray-50">
             <div className="flex justify-between">
               <span className="font-semibold">Order Total:</span>
-              <span className="text-lg font-bold">${calculateTotal().toFixed(2)}</span>
+              <span className="text-lg font-bold">
+                ${calculateTotal().toFixed(2)}
+              </span>
             </div>
             <div className="flex justify-between mt-2">
               <span>Payment Total:</span>
               <span>
-                ${paymentMethods.reduce((sum, pm) => sum + pm.amount, 0).toFixed(2)}
+                $
+                {paymentMethods
+                  .reduce((sum, pm) => sum + pm.amount, 0)
+                  .toFixed(2)}
               </span>
             </div>
           </Card>
@@ -368,7 +400,8 @@ const Orders = () => {
                 <strong>Order Number:</strong> {viewingOrder.orderNumber}
               </p>
               <p>
-                <strong>Client:</strong> {viewingOrder.client?.name} ({viewingOrder.client?.email})
+                <strong>Client:</strong> {viewingOrder.client?.name} (
+                {viewingOrder.client?.email})
               </p>
               <p>
                 <strong>Status:</strong> <Tag>{viewingOrder.status}</Tag>
@@ -391,7 +424,9 @@ const Orders = () => {
                       <td className="py-2">{item.product?.name}</td>
                       <td className="text-right">{item.quantity}</td>
                       <td className="text-right">${item.price?.toFixed(2)}</td>
-                      <td className="text-right">${(item.price * item.quantity).toFixed(2)}</td>
+                      <td className="text-right">
+                        ${(item.price * item.quantity).toFixed(2)}
+                      </td>
                     </tr>
                   ))}
                 </tbody>
@@ -402,13 +437,15 @@ const Orders = () => {
               {viewingOrder.paymentMethods?.map((pm, index) => (
                 <div key={index} className="flex justify-between py-1">
                   <span className="capitalize">{pm.method}:</span>
-                  <span>${pm.amount.toFixed(2)}</span>
+                  <span>${parseFloat(pm.amount).toFixed(2)}</span>
                 </div>
               ))}
               <Divider className="my-2" />
               <div className="flex justify-between font-bold">
                 <span>Total:</span>
-                <span>${viewingOrder.totalAmount?.toFixed(2)}</span>
+                <span>
+                  ${parseFloat(viewingOrder.totalAmount || 0).toFixed(2)}
+                </span>
               </div>
             </Card>
 

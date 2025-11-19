@@ -1,16 +1,16 @@
-import React, { useEffect } from 'react';
-import { Card, Row, Col, Statistic } from 'antd';
+import React, { useEffect } from "react";
+import { Card, Row, Col, Statistic } from "antd";
 import {
   ShoppingOutlined,
   ShoppingCartOutlined,
   TeamOutlined,
   CommentOutlined,
-} from '@ant-design/icons';
-import { useDispatch, useSelector } from 'react-redux';
-import { fetchProducts } from '../store/slices/productSlice';
-import { fetchOrders } from '../store/slices/orderSlice';
-import { fetchClients } from '../store/slices/clientSlice';
-import { fetchComments } from '../store/slices/commentSlice';
+} from "@ant-design/icons";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../store/slices/productSlice";
+import { fetchOrders } from "../store/slices/orderSlice";
+import { fetchClients } from "../store/slices/clientSlice";
+import { fetchComments } from "../store/slices/commentSlice";
 
 const Dashboard = () => {
   const dispatch = useDispatch();
@@ -21,48 +21,48 @@ const Dashboard = () => {
   const { user } = useSelector((state) => state.auth);
 
   useEffect(() => {
-    if (user?.role === 'admin' || user?.permissions?.products?.view) {
+    if (user?.role === "admin" || user?.permissions?.products?.view) {
       dispatch(fetchProducts());
     }
-    if (user?.role === 'admin' || user?.permissions?.orders?.view) {
+    if (user?.role === "admin" || user?.permissions?.orders?.view) {
       dispatch(fetchOrders());
     }
-    if (user?.role === 'admin' || user?.permissions?.clients?.view) {
+    if (user?.role === "admin" || user?.permissions?.clients?.view) {
       dispatch(fetchClients());
     }
-    if (user?.role === 'admin' || user?.permissions?.comments?.view) {
+    if (user?.role === "admin" || user?.permissions?.comments?.view) {
       dispatch(fetchComments());
     }
   }, [dispatch, user]);
 
   const stats = [
     {
-      title: 'Total Products',
+      title: "Total Products",
       value: products.length,
       icon: <ShoppingOutlined />,
-      color: '#3f8600',
-      show: user?.role === 'admin' || user?.permissions?.products?.view,
+      color: "#3f8600",
+      show: user?.role === "admin" || user?.permissions?.products?.view,
     },
     {
-      title: 'Total Orders',
+      title: "Total Orders",
       value: orders.length,
       icon: <ShoppingCartOutlined />,
-      color: '#1890ff',
-      show: user?.role === 'admin' || user?.permissions?.orders?.view,
+      color: "#1890ff",
+      show: user?.role === "admin" || user?.permissions?.orders?.view,
     },
     {
-      title: 'Total Clients',
+      title: "Total Clients",
       value: clients.length,
       icon: <TeamOutlined />,
-      color: '#722ed1',
-      show: user?.role === 'admin' || user?.permissions?.clients?.view,
+      color: "#722ed1",
+      show: user?.role === "admin" || user?.permissions?.clients?.view,
     },
     {
-      title: 'Total Comments',
+      title: "Total Comments",
       value: comments.length,
       icon: <CommentOutlined />,
-      color: '#fa8c16',
-      show: user?.role === 'admin' || user?.permissions?.comments?.view,
+      color: "#fa8c16",
+      show: user?.role === "admin" || user?.permissions?.comments?.view,
     },
   ].filter((stat) => stat.show);
 
@@ -77,7 +77,9 @@ const Dashboard = () => {
                 title={stat.title}
                 value={stat.value}
                 prefix={
-                  <span style={{ color: stat.color, fontSize: '24px' }}>{stat.icon}</span>
+                  <span style={{ color: stat.color, fontSize: "24px" }}>
+                    {stat.icon}
+                  </span>
                 }
                 valueStyle={{ color: stat.color }}
               />
@@ -89,22 +91,24 @@ const Dashboard = () => {
       <Card className="mt-6 shadow-md">
         <h2 className="text-xl font-semibold mb-4">Welcome, {user?.name}!</h2>
         <p className="text-gray-600">
-          You are logged in as <strong>{user?.role}</strong>. Use the menu to navigate through
-          different sections of the application.
+          You are logged in as <strong>{user?.role}</strong>. Use the menu to
+          navigate through different sections of the application.
         </p>
-        {user?.role !== 'admin' && (
+        {user?.role !== "admin" && (
           <div className="mt-4 p-4 bg-blue-50 rounded">
             <h3 className="font-semibold mb-2">Your Permissions:</h3>
             <div className="grid grid-cols-2 gap-2 text-sm">
-              {Object.entries(user?.permissions || {}).map(([resource, perms]) => (
-                <div key={resource}>
-                  <strong className="capitalize">{resource}:</strong>{' '}
-                  {Object.entries(perms)
-                    .filter(([_, value]) => value)
-                    .map(([key]) => key)
-                    .join(', ') || 'None'}
-                </div>
-              ))}
+              {Object.entries(user?.permissions || {}).map(
+                ([resource, perms]) => (
+                  <div key={resource}>
+                    <strong className="capitalize">{resource}:</strong>{" "}
+                    {Object.entries(perms)
+                      .filter(([_, value]) => value)
+                      .map(([key]) => key)
+                      .join(", ") || "None"}
+                  </div>
+                )
+              )}
             </div>
           </div>
         )}

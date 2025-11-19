@@ -1,48 +1,68 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../utils/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../utils/api";
 
 // Fetch all clients
-export const fetchClients = createAsyncThunk('clients/fetchClients', async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await api.get('/clients');
-    return data.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Failed to fetch clients');
+export const fetchClients = createAsyncThunk(
+  "clients/fetchClients",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get("/clients");
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to fetch clients"
+      );
+    }
   }
-});
+);
 
 // Create client
-export const createClient = createAsyncThunk('clients/createClient', async (clientData, { rejectWithValue }) => {
-  try {
-    const { data } = await api.post('/clients', clientData);
-    return data.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Failed to create client');
+export const createClient = createAsyncThunk(
+  "clients/createClient",
+  async (clientData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/clients", clientData);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to create client"
+      );
+    }
   }
-});
+);
 
 // Update client
-export const updateClient = createAsyncThunk('clients/updateClient', async ({ id, clientData }, { rejectWithValue }) => {
-  try {
-    const { data } = await api.put(`/clients/${id}`, clientData);
-    return data.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Failed to update client');
+export const updateClient = createAsyncThunk(
+  "clients/updateClient",
+  async ({ id, clientData }, { rejectWithValue }) => {
+    try {
+      const { data } = await api.put(`/clients/${id}`, clientData);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to update client"
+      );
+    }
   }
-});
+);
 
 // Delete client
-export const deleteClient = createAsyncThunk('clients/deleteClient', async (id, { rejectWithValue }) => {
-  try {
-    await api.delete(`/clients/${id}`);
-    return id;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Failed to delete client');
+export const deleteClient = createAsyncThunk(
+  "clients/deleteClient",
+  async (id, { rejectWithValue }) => {
+    try {
+      await api.delete(`/clients/${id}`);
+      return id;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to delete client"
+      );
+    }
   }
-});
+);
 
 const clientSlice = createSlice({
-  name: 'clients',
+  name: "clients",
   initialState: {
     items: [],
     loading: false,
@@ -70,7 +90,9 @@ const clientSlice = createSlice({
         state.items.push(action.payload);
       })
       .addCase(updateClient.fulfilled, (state, action) => {
-        const index = state.items.findIndex((item) => item._id === action.payload._id);
+        const index = state.items.findIndex(
+          (item) => item._id === action.payload._id
+        );
         if (index !== -1) {
           state.items[index] = action.payload;
         }

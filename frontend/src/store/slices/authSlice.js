@@ -1,50 +1,63 @@
-import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import api from '../../utils/api';
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import api from "../../utils/api";
 
 // Load user
-export const loadUser = createAsyncThunk('auth/loadUser', async (_, { rejectWithValue }) => {
-  try {
-    const { data } = await api.get('/auth/me');
-    return data.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Failed to load user');
+export const loadUser = createAsyncThunk(
+  "auth/loadUser",
+  async (_, { rejectWithValue }) => {
+    try {
+      const { data } = await api.get("/auth/me");
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Failed to load user"
+      );
+    }
   }
-});
+);
 
 // Login
-export const login = createAsyncThunk('auth/login', async (credentials, { rejectWithValue }) => {
-  try {
-    const { data } = await api.post('/auth/login', credentials);
-    localStorage.setItem('token', data.data.token);
-    return data.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Login failed');
+export const login = createAsyncThunk(
+  "auth/login",
+  async (credentials, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/auth/login", credentials);
+      localStorage.setItem("token", data.data.token);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(error.response?.data?.message || "Login failed");
+    }
   }
-});
+);
 
 // Register
-export const register = createAsyncThunk('auth/register', async (userData, { rejectWithValue }) => {
-  try {
-    const { data } = await api.post('/auth/register', userData);
-    localStorage.setItem('token', data.data.token);
-    return data.data;
-  } catch (error) {
-    return rejectWithValue(error.response?.data?.message || 'Registration failed');
+export const register = createAsyncThunk(
+  "auth/register",
+  async (userData, { rejectWithValue }) => {
+    try {
+      const { data } = await api.post("/auth/register", userData);
+      localStorage.setItem("token", data.data.token);
+      return data.data;
+    } catch (error) {
+      return rejectWithValue(
+        error.response?.data?.message || "Registration failed"
+      );
+    }
   }
-});
+);
 
 // Logout
-export const logout = createAsyncThunk('auth/logout', async () => {
-  localStorage.removeItem('token');
+export const logout = createAsyncThunk("auth/logout", async () => {
+  localStorage.removeItem("token");
 });
 
 const authSlice = createSlice({
-  name: 'auth',
+  name: "auth",
   initialState: {
     user: null,
-    token: localStorage.getItem('token'),
+    token: localStorage.getItem("token"),
     isAuthenticated: false,
-    loading: true,
+    loading: false,
     error: null,
   },
   reducers: {
@@ -68,7 +81,7 @@ const authSlice = createSlice({
         state.isAuthenticated = false;
         state.user = null;
         state.token = null;
-        localStorage.removeItem('token');
+        localStorage.removeItem("token");
       })
       // Login
       .addCase(login.pending, (state) => {
